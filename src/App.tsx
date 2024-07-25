@@ -69,8 +69,12 @@ const Task: Component<{ task: Task }> = (props) => {
     );
   };
 
+  const [draggable, setDraggable] = createSignal(false);
+
   const onDragStart = (e: DragEvent) => {
     console.log(`dragging ${props.task.text}`);
+
+    setDraggable(false);
 
     e.dataTransfer?.setData("task-id", props.task.id);
   };
@@ -111,7 +115,7 @@ const Task: Component<{ task: Task }> = (props) => {
   return (
     <div
       class="flex rounded-md bg-slate-100 p-2 shadow-md outline-none outline-offset-2 transition-all has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300"
-      draggable="true"
+      draggable={draggable()}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={(e) => {
@@ -129,6 +133,13 @@ const Task: Component<{ task: Task }> = (props) => {
         onClick={deleteTask}
       >
         <i class="bi bi-trash3"></i>
+      </button>
+      <button
+        class="rounded-md px-1 transition-all hover:text-sky-600"
+        onMouseDown={() => setDraggable(true)}
+        onMouseUp={() => setDraggable(false)}
+      >
+        <i class="bi bi-grip-vertical"></i>
       </button>
     </div>
   );
