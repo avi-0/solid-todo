@@ -69,8 +69,56 @@ const Task: Component<{ task: Task }> = (props) => {
     );
   };
 
+  const onDragStart = (e: DragEvent) => {
+    console.log(`dragging ${props.task.text}`);
+
+    e.dataTransfer?.setData("task-id", props.task.id);
+  };
+
+  const onDragOver = (e: DragEvent) => {
+    console.log(e.dataTransfer?.getData("task-id"));
+
+    const id = e.dataTransfer?.getData("task-id");
+    if (id) {
+      e.preventDefault();
+
+      // insert in current task's position
+      const droppedTaskIndex = state.tasks.findIndex((task) => task.id == id);
+      const droppedTask = state.tasks.find((task) => task.id == id);
+
+      if (droppedTask) {
+        const tasks = state.tasks.filter((task) => task != droppedTask);
+        const thisTaskIndex = tasks.findIndex(
+          (task) => task.id == props.task.id,
+        );
+
+        const before = droppedTaskIndex > thisTaskIndex;
+
+        if (thisTaskIndex != -1) {
+          setState(
+            "tasks",
+            tasks.toSpliced(
+              before ? thisTaskIndex : thisTaskIndex + 1,
+              0,
+              droppedTask,
+            ),
+          );
+        }
+      }
+    }
+  };
+
   return (
-    <div class="flex rounded-md bg-slate-100 p-2 shadow-md outline-none outline-offset-2 transition-all has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300">
+    <div
+      class="flex rounded-md bg-slate-100 p-2 shadow-md outline-none outline-offset-2 transition-all has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300"
+      draggable="true"
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={(e) => {
+        console.log("dropped");
+        e.preventDefault();
+      }}
+    >
       <input
         class="h-min flex-1 resize-none bg-inherit outline-none selection:bg-sky-300"
         value={props.task.text}
