@@ -79,9 +79,9 @@ const DeleteTaskButton: Component<{ task: Task }> = (props) => {
       </button>
       <Show when={showPopup()}>
         <Portal>
-          <div class="fixed left-0 top-0 h-screen w-screen bg-black bg-opacity-50">
+          <div class="fixed left-0 top-0 h-screen w-screen bg-black bg-opacity-30">
             <div class="relative inset-1/2 w-max -translate-x-1/2 -translate-y-1/2 rounded-md bg-slate-100 p-2 shadow-md">
-              <div class="p-2 text-center">Delete task?</div>
+              <div class="p-2 pb-4 text-center text-lg">Delete task?</div>
               <div class="flex gap-2">
                 <button
                   class="rounded-md border border-slate-500 p-2 transition-all hover:bg-slate-500 hover:text-white"
