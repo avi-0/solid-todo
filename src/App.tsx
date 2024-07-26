@@ -34,7 +34,7 @@ const StateContext = createContext<StateContextType>({
 const Button: ParentComponent<{ onClick: () => void }> = (props) => {
   return (
     <button
-      class="min-w-full rounded-md bg-sky-500 p-2 text-white shadow-md transition-all hover:bg-sky-600 hover:shadow-lg sm:min-w-min"
+      class="min-w-full rounded-md bg-sky-500 p-2 text-white shadow-sm transition-all hover:bg-sky-600 hover:shadow-md sm:min-w-min"
       onclick={props.onClick}
     >
       {props.children}
@@ -114,7 +114,7 @@ const Task: Component<{ task: Task }> = (props) => {
 
   return (
     <div
-      class="flex rounded-md bg-slate-100 p-2 shadow-md outline-none outline-offset-2 transition-all has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300"
+      class="flex rounded-md bg-slate-100 p-2 shadow-sm outline-none outline-offset-2 transition-all hover:shadow-md has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300"
       draggable={draggable()}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
@@ -189,7 +189,7 @@ const App: Component = () => {
         <div class="flex max-w-screen-md flex-1 flex-col gap-2">
           <div class="flex flex-wrap justify-center gap-2">
             <input
-              class="min-w-full flex-1 rounded-md p-2 shadow-md outline-none transition-all selection:bg-sky-300 focus:shadow-lg focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-sky-300 sm:min-w-min"
+              class="min-w-full flex-1 rounded-md p-2 shadow-sm outline-none transition-all selection:bg-sky-300 hover:shadow-md focus:shadow-lg focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-sky-300 sm:min-w-min"
               value={text()}
               onInput={(e) => setText(e.target.value)}
               onKeyDown={(e) => {
@@ -204,7 +204,7 @@ const App: Component = () => {
             </Button>
           </div>
 
-          <For each={state.tasks}>{(item, index) => <Task task={item} />}</For>
+          <For each={state.tasks}>{(task) => <Task task={task} />}</For>
         </div>
       </div>
     </StateContext.Provider>
