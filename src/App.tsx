@@ -250,7 +250,7 @@ const App: Component = () => {
               }}
             />
             <Button onClick={addItem}>
-              <i class="bi bi-plus-lg"></i>
+              <i class="bi bi-plus-lg pr-1"></i>
               Add
             </Button>
           </div>
