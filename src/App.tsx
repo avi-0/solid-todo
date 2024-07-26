@@ -15,6 +15,7 @@ import { Portal } from "solid-js/web";
 type Task = {
   id: string;
   text: string;
+  completed?: boolean;
 };
 
 type State = {
@@ -84,7 +85,7 @@ const DeleteTaskButton: Component<{ task: Task }> = (props) => {
               <div class="p-2 pb-4 text-center text-lg">Delete task?</div>
               <div class="flex gap-2">
                 <button
-                  class="rounded-md border border-slate-500 p-2 transition-all hover:bg-slate-500 hover:text-white"
+                  class="rounded-md border border-slate-500 p-2 shadow-sm transition-all hover:bg-slate-500 hover:text-white hover:shadow-md"
                   ref={cancelRef}
                   onClick={() => setShowPopup(false)}
                 >
@@ -107,6 +108,22 @@ const DeleteTaskButton: Component<{ task: Task }> = (props) => {
 
 const Task: Component<{ task: Task }> = (props) => {
   const { state, setState } = useContext(StateContext);
+
+  const check = () => {
+    setState(
+      "tasks",
+      state.tasks.map((task) => {
+        if (task.id == props.task.id) {
+          return {
+            ...task,
+            completed: !task.completed,
+          };
+        }
+
+        return task;
+      }),
+    );
+  };
 
   const updateTask = (text: string) => {
     console.log(text);
@@ -170,7 +187,7 @@ const Task: Component<{ task: Task }> = (props) => {
 
   return (
     <div
-      class="flex rounded-md bg-slate-100 p-2 shadow-sm outline-none outline-offset-2 transition-all hover:shadow-md has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300"
+      class={`flex rounded-md bg-slate-100 p-2 shadow-sm outline-none outline-offset-2 transition-all hover:shadow-md has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300 ${props.task.completed ? "bg-green-100" : ""}`}
       draggable={draggable()}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
@@ -180,10 +197,16 @@ const Task: Component<{ task: Task }> = (props) => {
       }}
     >
       <input
-        class="h-min flex-1 resize-none bg-inherit outline-none selection:bg-sky-300"
+        class={`h-min flex-1 resize-none bg-inherit outline-none selection:bg-sky-300 ${props.task.completed ? "line-through" : ""}`}
         value={props.task.text}
         onChange={(e) => updateTask(e.target.value)}
       />
+      <button
+        class="rounded-md px-1 transition-all hover:text-green-600"
+        onClick={check}
+      >
+        <i class="bi bi-check-lg"></i>
+      </button>
       <DeleteTaskButton task={props.task} />
       <button
         class="rounded-md px-1 transition-all hover:text-sky-600"
