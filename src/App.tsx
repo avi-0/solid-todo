@@ -187,7 +187,7 @@ const Task: Component<{ task: Task }> = (props) => {
 
   return (
     <div
-      class={`flex rounded-md bg-slate-100 p-2 shadow-sm outline-none outline-offset-2 transition-all hover:shadow-md has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300 ${props.task.completed ? "bg-green-100" : ""}`}
+      class={`flex rounded-md p-2 shadow-sm outline-none outline-offset-2 transition-all hover:shadow-md has-[:focus]:shadow-lg has-[:focus]:outline-2 has-[:focus]:outline-sky-300 ${props.task.completed ? "bg-green-100" : "bg-slate-100"}`}
       draggable={draggable()}
       onDragStart={onDragStart}
       onDragOver={onDragOver}

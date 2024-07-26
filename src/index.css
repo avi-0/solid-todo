@@ -5,5 +5,5 @@
 @tailwind utilities;
 
 .bi::before {
-  transform: scale(115%);
+  transform: scale(120%);
 }
