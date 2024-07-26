@@ -5,10 +5,12 @@ import {
   createSignal,
   For,
   ParentComponent,
+  Show,
   useContext,
   type Component,
 } from "solid-js";
 import { createStore, SetStoreFunction, unwrap } from "solid-js/store";
+import { Portal } from "solid-js/web";
 
 type Task = {
   id: string;
@@ -34,7 +36,7 @@ const StateContext = createContext<StateContextType>({
 const Button: ParentComponent<{ onClick: () => void }> = (props) => {
   return (
     <button
-      class="min-w-full rounded-md bg-sky-500 p-2 text-white shadow-sm transition-all hover:bg-sky-600 hover:shadow-md sm:min-w-min"
+      class="min-w-full rounded-md bg-sky-500 p-2 font-bold text-white shadow-sm transition-all hover:bg-sky-600 hover:shadow-md sm:min-w-min"
       onclick={props.onClick}
     >
       {props.children}
@@ -42,7 +44,7 @@ const Button: ParentComponent<{ onClick: () => void }> = (props) => {
   );
 };
 
-const Task: Component<{ task: Task }> = (props) => {
+const DeleteTaskButton: Component<{ task: Task }> = (props) => {
   const { state, setState } = useContext(StateContext);
 
   const deleteTask = () => {
@@ -50,7 +52,61 @@ const Task: Component<{ task: Task }> = (props) => {
       "tasks",
       state.tasks.filter((task) => task.id != props.task.id),
     );
+
+    setShowPopup(false);
   };
+
+  const [showPopup, setShowPopup] = createSignal(false);
+
+  let cancelRef: HTMLButtonElement | undefined;
+
+  createEffect(() => {
+    if (showPopup() && cancelRef) {
+      cancelRef.focus();
+      console.log("ping");
+    }
+  });
+
+  return (
+    <>
+      <button
+        class="rounded-md px-1 transition-all hover:text-red-600"
+        onClick={() => {
+          setShowPopup(true);
+        }}
+      >
+        <i class="bi bi-trash3"></i>
+      </button>
+      <Show when={showPopup()}>
+        <Portal>
+          <div class="fixed left-0 top-0 h-screen w-screen bg-black bg-opacity-50">
+            <div class="relative inset-1/2 w-max -translate-x-1/2 -translate-y-1/2 rounded-md bg-slate-100 p-2 shadow-md">
+              <div class="p-2 text-center">Delete task?</div>
+              <div class="flex gap-2">
+                <button
+                  class="rounded-md border border-slate-500 p-2 transition-all hover:bg-slate-500 hover:text-white"
+                  ref={cancelRef}
+                  onClick={() => setShowPopup(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  class="rounded-md bg-red-500 p-2 font-bold text-white shadow-sm transition-all hover:bg-red-700 hover:shadow-md"
+                  onClick={deleteTask}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </Portal>
+      </Show>
+    </>
+  );
+};
+
+const Task: Component<{ task: Task }> = (props) => {
+  const { state, setState } = useContext(StateContext);
 
   const updateTask = (text: string) => {
     console.log(text);
@@ -128,12 +184,7 @@ const Task: Component<{ task: Task }> = (props) => {
         value={props.task.text}
         onChange={(e) => updateTask(e.target.value)}
       />
-      <button
-        class="rounded-md px-1 transition-all hover:text-red-600"
-        onClick={deleteTask}
-      >
-        <i class="bi bi-trash3"></i>
-      </button>
+      <DeleteTaskButton task={props.task} />
       <button
         class="rounded-md px-1 transition-all hover:text-sky-600"
         onMouseDown={() => setDraggable(true)}
